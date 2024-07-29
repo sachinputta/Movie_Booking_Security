@@ -44,7 +44,7 @@ public class SecurityConfiguration
 		.csrf(csrf-> csrf.disable())
 		.cors(cors-> cors.disable())
 		.authorizeHttpRequests(auth -> auth
-				.requestMatchers("/authenticate","/addDealer").permitAll()
+				.requestMatchers("/authenticate","/addAdmin", "/registerUser").permitAll()
 				.anyRequest().authenticated())
 		.exceptionHandling(exception -> exception.authenticationEntryPoint(authenticationEntryPoint))
 		.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

@@ -24,13 +24,13 @@ public class RegisteredUser extends Visitor {
 	private String email;
 	
 	
-	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,
-			mappedBy = "registeredUser")
-	private List<BookTicket> bookTicket;
-	
-	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,
-			mappedBy = "registeredUser")
-	@JsonManagedReference
-	private List<Cards> cards;
+//	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,
+//			mappedBy = "registeredUser")
+//	private List<BookTicket> bookTicket;
+//	
+//	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,
+//			mappedBy = "registeredUser")
+//	@JsonManagedReference
+//	private List<Cards> cards;
 
 }

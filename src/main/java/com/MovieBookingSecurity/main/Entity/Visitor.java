@@ -1,5 +1,7 @@
 package com.MovieBookingSecurity.main.Entity;
 
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import lombok.AllArgsConstructor;
@@ -13,9 +15,8 @@ import lombok.NoArgsConstructor;
 public abstract class Visitor {
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long visitorid;
-	private String fullname;
-	private long mobileno;
-	private String address;
+	private String location;
 
 }

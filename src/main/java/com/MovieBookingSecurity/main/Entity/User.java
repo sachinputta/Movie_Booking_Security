@@ -41,16 +41,16 @@ public class User implements UserDetails {
 	private long phoneno;
 	
 	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,
-			mappedBy = "admin")
+			mappedBy = "user")
 	@JsonManagedReference
 	private List<Coupons> coupons;
 	
 	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,
-			mappedBy = "registeredUser")
+			mappedBy = "user")
 	private List<BookTicket> bookTicket;
 	
 	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,
-			mappedBy = "registeredUser")
+			mappedBy = "user")
 	@JsonManagedReference
 	private List<Cards> cards;
 	

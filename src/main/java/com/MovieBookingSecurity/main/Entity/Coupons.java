@@ -25,7 +25,9 @@ public class Coupons {
 	
 	@ManyToOne
 	@JsonBackReference
-	public Admin admin;
+	public User user;
+//	public Admin admin;
+	
 	
 	
 

@@ -6,20 +6,23 @@ import com.MovieBookingSecurity.main.Entity.Admin;
 import com.MovieBookingSecurity.main.Entity.Coupons;
 import com.MovieBookingSecurity.main.Entity.Movie;
 import com.MovieBookingSecurity.main.Entity.MovieShows;
+import com.MovieBookingSecurity.main.Entity.User;
 
 public interface AdminService {
 
 	// Admin................//
+	
+	public String addRoles();
 
-	public Admin addAdmin(Admin admin);
+	public User addAdmin(User user);
 
-	public Admin updateAdmin(long adminid, Admin admin);
+	public User updateAdmin(String email, User user);
 
-	public String deleteAdmin(long adminid);
+	public String deleteAdmin(String email);
 
 	// Movies................//
 
-	public Movie addMovie(long adminid, Movie movie);
+	public Movie addMovie(String email, Movie movie);
 
 	public Movie updateMovie(String movieid, Movie movie);
 
@@ -31,7 +34,7 @@ public interface AdminService {
 
 	// MovieShows................//
 
-	public MovieShows addShows(long adminid, String movieid, MovieShows movieShows);
+	public MovieShows addShows(String email, String movieid, MovieShows movieShows);
 
 	public MovieShows updateShows(long showid, MovieShows movieShows);
 
@@ -39,7 +42,7 @@ public interface AdminService {
 
 	// Coupons................//
 
-	public Coupons addCoupons(long adminid, Coupons coupons);
+	public Coupons addCoupons(String email, Coupons coupons);
 
 	public Coupons updateCoupons(long couponid, Coupons coupons);
 

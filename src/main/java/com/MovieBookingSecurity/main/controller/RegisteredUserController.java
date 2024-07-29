@@ -3,6 +3,7 @@ package com.MovieBookingSecurity.main.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,35 +16,44 @@ import com.MovieBookingSecurity.main.Entity.Cards;
 import com.MovieBookingSecurity.main.Entity.Coupons;
 import com.MovieBookingSecurity.main.Entity.Movie;
 import com.MovieBookingSecurity.main.Entity.RegisteredUser;
+import com.MovieBookingSecurity.main.Entity.User;
 import com.MovieBookingSecurity.main.service.RegisteredUserService;
+
+import jakarta.annotation.PostConstruct;
 
 @RestController
 public class RegisteredUserController {
 
 	@Autowired
 	public RegisteredUserService registeredUserService;
+	
+	@PostConstruct
+	public void addRoles() {
+		registeredUserService.addRoles();
+	}
 
 	@PostMapping("/registerUser")
-	public RegisteredUser registerUser(@RequestBody RegisteredUser registeredUser) {
+	public User registerUser(@RequestBody User user) {
 
-		RegisteredUser r1 = registeredUserService.registerUser(registeredUser);
+		User r1 = registeredUserService.registerUser(user);
 		return r1;
 	}
 
+	@PreAuthorize("hasRole('Customer')")
 	@PutMapping("/updateRegisterUser")
-	public RegisteredUser updateRegisterUser(@RequestParam long registerid,
-			@RequestBody RegisteredUser registeredUser) {
-		RegisteredUser r2 = registeredUserService.updateRegisterUser(registerid, registeredUser);
+	public User updateRegisterUser(@RequestParam String email, @RequestBody User user) {
+		User r2 = registeredUserService.updateRegisterUser(email, user);
 		return r2;
 	}
 
 	@DeleteMapping("/deleteRegisterUser")
-	public String deleteRegisterUser(@RequestParam long registerid) {
-		String r3 = registeredUserService.deleteRegisterUser(registerid);
+	public String deleteRegisterUser(@RequestParam String email) {
+		String r3 = registeredUserService.deleteRegisterUser(email);
 
 		return r3;
 	}
 
+	@PreAuthorize("hasRole('Customer')")
 	@GetMapping("/viewAllMovies")
 
 	public List<Movie> viewAllMovies() {
@@ -52,6 +62,7 @@ public class RegisteredUserController {
 		return view_All_Movies;
 	}
 
+	@PreAuthorize("hasRole('Customer')")
 	@GetMapping("/viewMovieByName")
 	public List<Movie> viewMovieByName(@RequestParam String moviename) {
 		List<Movie> view_All_By_Name = registeredUserService.viewMovieByName(moviename);
@@ -60,19 +71,22 @@ public class RegisteredUserController {
 
 	}
 
+	@PreAuthorize("hasRole('Customer')")
 	@PostMapping("/addCards")
-	public Cards addCards(@RequestParam long registerid, @RequestBody Cards cards) {
+	public Cards addCards(@RequestParam String email, @RequestBody Cards cards) {
 
-		Cards c1 = registeredUserService.addCards(registerid, cards);
+		Cards c1 = registeredUserService.addCards(email, cards);
 		return c1;
 	}
 
+	@PreAuthorize("hasRole('Customer')")
 	@PutMapping("/updateCards")
 	public Cards updateCards(@RequestParam long cardid, @RequestBody Cards cards) {
 		Cards c2 = registeredUserService.updateCards(cardid, cards);
 		return c2;
 	}
 
+	@PreAuthorize("hasRole('Customer')")
 	@DeleteMapping("/deleteCards")
 	public String deleteCards(@RequestParam long cardid) {
 		String c3 = registeredUserService.deleteCards(cardid);
@@ -80,14 +94,16 @@ public class RegisteredUserController {
 		return c3;
 	}
 
+	@PreAuthorize("hasRole('Customer')")
 	@GetMapping("/availableBalance")
-	public float availableBalance(@RequestParam long registerid, long cardid) {
-		float balance = registeredUserService.availableBalance(registerid, cardid);
+	public float availableBalance(@RequestParam String email, long cardid) {
+		float balance = registeredUserService.availableBalance(email, cardid);
 
 		return balance;
 
 	}
 
+	@PreAuthorize("hasRole('Customer')")
 	@GetMapping("/viewSeatAvailable")
 	public int viewSeatAvailable(@RequestParam String movieid, long showid) {
 		int balance = registeredUserService.viewSeatAvailable(movieid, showid);
@@ -96,6 +112,7 @@ public class RegisteredUserController {
 
 	}
 
+	@PreAuthorize("hasRole('Customer')")
 	@GetMapping("/viewAllCoupons")
 
 	public List<Coupons> viewAllCoupons() {
