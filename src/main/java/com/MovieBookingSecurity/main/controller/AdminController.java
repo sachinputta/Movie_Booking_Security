@@ -3,6 +3,7 @@ package com.MovieBookingSecurity.main.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,12 +11,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.MovieBookingSecurity.main.Entity.Admin;
 import com.MovieBookingSecurity.main.Entity.Coupons;
 import com.MovieBookingSecurity.main.Entity.Movie;
 import com.MovieBookingSecurity.main.Entity.MovieShows;
+import com.MovieBookingSecurity.main.Entity.User;
 import com.MovieBookingSecurity.main.service.AdminService;
+
+import jakarta.annotation.PostConstruct;
 
 @RestController
 public class AdminController {
@@ -23,35 +25,44 @@ public class AdminController {
 	@Autowired
 	public AdminService adminService;
 
+	@PostConstruct
+	public void addRoles() {
+		adminService.addRoles();
+	}
+	
 	@PostMapping("/addAdmin")
-	public Admin addAdmin(@RequestBody Admin admin) {
+	public User addAdmin(@RequestBody User user) {
 
-		Admin t1 = adminService.addAdmin(admin);
+		User t1 = adminService.addAdmin(user);
 		return t1;
 	}
 
+	@PreAuthorize("hasRole('Admin')")
 	@PutMapping("/updateAdmin")
-	public Admin updateAdmin(@RequestParam long adminid, @RequestBody Admin admin) {
+	public User updateAdmin(@RequestParam String email, @RequestBody User user) {
 
-		Admin admin_update = adminService.updateAdmin(adminid, admin);
+		User admin_update = adminService.updateAdmin(email, user);
 		return admin_update;
 	}
 
+	@PreAuthorize("hasRole('Admin')")
 	@DeleteMapping("/deleteAdmin")
-	public String deleteAdmin(@RequestParam long adminid) {
-		String delete_admin = adminService.deleteAdmin(adminid);
+	public String deleteAdmin(@RequestParam String email) {
+		String delete_admin = adminService.deleteAdmin(email);
 
 		return delete_admin;
 	}
 
+	@PreAuthorize("hasRole('Admin')")
 	@PostMapping("/addMovie")
-	public Movie addMovie(@RequestParam long adminid, @RequestBody Movie movie) {
+	public Movie addMovie(@RequestParam String email, @RequestBody Movie movie) {
 
-		Movie m1 = adminService.addMovie(adminid, movie);
+		Movie m1 = adminService.addMovie(email, movie);
 		return m1;
 
 	}
 
+	@PreAuthorize("hasRole('Admin')")
 	@PutMapping("/updateMovie")
 	public Movie updateMovie(@RequestParam String movieid, @RequestBody Movie movie) {
 
@@ -66,6 +77,7 @@ public class AdminController {
 		return delete_movie;
 	}
 
+	@PreAuthorize("hasRole('Admin')")
 	@GetMapping("/viewAllMoviesByAdmin")
 
 	public List<Movie> viewAllMoviesByAdmin() {
@@ -74,6 +86,7 @@ public class AdminController {
 		return view_All_Movies;
 	}
 
+	@PreAuthorize("hasRole('Admin')")
 	@GetMapping("/viewMovieById")
 
 	public Movie viewMovieById(@RequestParam String movieid) {
@@ -83,14 +96,16 @@ public class AdminController {
 
 	}
 
+	@PreAuthorize("hasRole('Admin')")
 	@PostMapping("/addShows")
-	public MovieShows addShows(@RequestParam long adminid, String movieid, @RequestBody MovieShows movieShows) {
+	public MovieShows addShows(@RequestParam String email, String movieid, @RequestBody MovieShows movieShows) {
 
-		MovieShows m4 = adminService.addShows(adminid, movieid, movieShows);
+		MovieShows m4 = adminService.addShows(email, movieid, movieShows);
 		return m4;
 
 	}
 
+	@PreAuthorize("hasRole('Admin')")
 	@PutMapping("/updateShows")
 	public MovieShows updateShows(@RequestParam long showid, @RequestBody MovieShows movieShows) {
 
@@ -98,6 +113,7 @@ public class AdminController {
 		return shows_update;
 	}
 
+	@PreAuthorize("hasRole('Admin')")
 	@DeleteMapping("/deleteShows")
 	public String deleteShows(@RequestParam long showid) {
 		String delete_show = adminService.deleteShows(showid);
@@ -105,14 +121,16 @@ public class AdminController {
 		return delete_show;
 	}
 
+	@PreAuthorize("hasRole('Admin')")
 	@PostMapping("/addCoupons")
-	public Coupons addCoupons(@RequestParam long adminid, @RequestBody Coupons coupons) {
+	public Coupons addCoupons(@RequestParam String email, @RequestBody Coupons coupons) {
 
-		Coupons c5 = adminService.addCoupons(adminid, coupons);
+		Coupons c5 = adminService.addCoupons(email, coupons);
 		return c5;
 
 	}
 
+	@PreAuthorize("hasRole('Admin')")
 	@PutMapping("/updateCoupons")
 	public Coupons updateCoupons(@RequestParam long couponid, @RequestBody Coupons coupons) {
 
@@ -120,6 +138,7 @@ public class AdminController {
 		return coupon_update;
 	}
 
+	@PreAuthorize("hasRole('Admin')")
 	@DeleteMapping("/deleteCoupons")
 	public String deleteCoupons(@RequestParam long couponid) {
 		String delete_coupon = adminService.deleteCoupons(couponid);

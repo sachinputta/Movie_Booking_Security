@@ -27,9 +27,9 @@ public class Admin {
 	private long mobileno;
 	private String address;
 	
-	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,
-			mappedBy = "admin")
-	@JsonManagedReference
-	private List<Coupons> coupons;
+//	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,
+//			mappedBy = "admin")
+//	@JsonManagedReference
+//	private List<Coupons> coupons;
 	
 }

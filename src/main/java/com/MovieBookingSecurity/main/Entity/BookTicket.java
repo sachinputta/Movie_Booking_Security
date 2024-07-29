@@ -25,8 +25,9 @@ public class BookTicket {
 	private float ticketPrice; 
 
 	@ManyToOne
-	@JoinColumn(name = "registered_user_registerid")
-	private RegisteredUser registeredUser;
+	@JoinColumn(name = "user_registerid")
+//	private RegisteredUser registeredUser;
+	private User user;
 	
 	@ManyToOne
 	private Movie movie;

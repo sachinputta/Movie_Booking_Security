@@ -1,7 +1,5 @@
 package com.MovieBookingSecurity.main.Entity;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Entity;
@@ -27,10 +25,10 @@ public class Cards {
 	private long cardno;
 	private String cardtype;
 	private float availableamount;
-	
+
 	@ManyToOne
 	@JsonBackReference
-	@JoinColumn(name = "registered_user_registerid")
-	private RegisteredUser registeredUser;
-	
+	@JoinColumn(name = "user_registerid")
+	private User user;
+
 }

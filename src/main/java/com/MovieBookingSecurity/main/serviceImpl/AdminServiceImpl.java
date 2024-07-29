@@ -1,26 +1,30 @@
 package com.MovieBookingSecurity.main.serviceImpl;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import com.MovieBookingSecurity.main.Entity.Admin;
 import com.MovieBookingSecurity.main.Entity.Coupons;
 import com.MovieBookingSecurity.main.Entity.Movie;
 import com.MovieBookingSecurity.main.Entity.MovieShows;
+import com.MovieBookingSecurity.main.Entity.Role;
+import com.MovieBookingSecurity.main.Entity.User;
 import com.MovieBookingSecurity.main.exception.ResourceNotFoundException;
-import com.MovieBookingSecurity.main.repository.AdminRepository;
 import com.MovieBookingSecurity.main.repository.CouponsRepository;
 import com.MovieBookingSecurity.main.repository.MovieRepository;
 import com.MovieBookingSecurity.main.repository.MovieShowsRepository;
+import com.MovieBookingSecurity.main.repository.RoleRepository;
+import com.MovieBookingSecurity.main.repository.UserRepository;
 import com.MovieBookingSecurity.main.service.AdminService;
 
 @Service
 public class AdminServiceImpl implements AdminService {
 
 	@Autowired
-	public AdminRepository adminRepository;
+	public UserRepository userRepository;
 
 	@Autowired
 	public MovieRepository movieRepository;
@@ -31,49 +35,72 @@ public class AdminServiceImpl implements AdminService {
 	@Autowired
 	public CouponsRepository couponsRepository;
 
-	@Override
-	public Admin addAdmin(Admin admin) {
-		Admin a1 = adminRepository.findById(admin.getAdminid()).orElse(new Admin());
+	@Autowired
+	private RoleRepository roleRepository;
 
-		a1.setAdminid(admin.getAdminid());
-		a1.setFullname(admin.getFullname());
-		a1.setPassword(admin.getPassword());
-		a1.setEmail(admin.getEmail());
-		a1.setAddress(admin.getAddress());
-		a1.setMobileno(admin.getMobileno());
-		return adminRepository.save(a1);
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
+	public String getEncodedPassword(String password) {
+		return passwordEncoder.encode(password);
 	}
 
 	@Override
-	public Admin updateAdmin(long adminid, Admin admin) {
-		Admin t1 = adminRepository.findById(adminid)
-				.orElseThrow(() -> new ResourceNotFoundException("Admin-ID is not found...!! : " + adminid));
+	public String addRoles() {
+		Role adminRole = new Role();
+		adminRole.setRolename("Admin");
+		roleRepository.save(adminRole);
 
-		t1.setEmail(admin.getEmail());
-		t1.setAddress(admin.getAddress());
-		t1.setMobileno(admin.getMobileno());
-		return adminRepository.save(t1);
+		Role customerRole = new Role();
+		customerRole.setRolename("Customer");
+		roleRepository.save(customerRole);
+
+		Role visitorRole = new Role();
+		visitorRole.setRolename("Visitor");
+		roleRepository.save(visitorRole);
+
+		return "Success";
 	}
 
 	@Override
-	public String deleteAdmin(long adminid) {
-		Admin d1 = adminRepository.findById(adminid)
-				.orElseThrow(() -> new ResourceNotFoundException("Admin-ID is not found...!! : " + adminid));
-		adminRepository.delete(d1);
-		return "Admin Deleted Successfully.... (AdminId : " + adminid + ")";
+	public User addAdmin(User user) {
+		Role role = roleRepository.findById("Admin")
+				.orElseThrow(() -> new ResourceNotFoundException("Role not found...!!"));
+		Set<Role> roles = new HashSet<>();
+		roles.add(role);
+		user.setRoles(roles);
+		String encodedPassword = getEncodedPassword(user.getPassword());
+		user.setPassword(encodedPassword);
+		return userRepository.save(user);
 	}
 
 	@Override
-	public Movie addMovie(long adminid, Movie movie) {
-		Admin t1 = adminRepository.findById(adminid)
-				.orElseThrow(() -> new ResourceNotFoundException("Admin-ID is not found...!! : " + adminid));
-		Movie m1 = movieRepository.findById(movie.getMovieid()).orElse(new Movie());
+	public User updateAdmin(String email, User user) {
+		User t1 = userRepository.findById(email)
+				.orElseThrow(() -> new ResourceNotFoundException("Admin Email-ID is not found...!! : " + email));
 
-		m1.setMovieid(movie.getMovieid());
-		m1.setMoviename(movie.getMoviename());
-		m1.setVenue(movie.getVenue());
+		String encodedPassword = getEncodedPassword(user.getPassword());
+		t1.setPassword(encodedPassword);
+		t1.setName(user.getName());
+		t1.setAddress(user.getAddress());
+		t1.setPhoneno(user.getPhoneno());
+		return userRepository.save(t1);
+	}
 
-		return movieRepository.save(m1);
+	@Override
+	public String deleteAdmin(String email) {
+		User d1 = userRepository.findById(email)
+				.orElseThrow(() -> new ResourceNotFoundException("Admin-ID is not found...!! : " + email));
+		userRepository.delete(d1);
+		return "Dealer Deleted Successfully....!!! (Admin-ID : " + email + ")";
+	}
+
+	@Override
+	public Movie addMovie(String email, Movie movie) {
+		User t1 = userRepository.findById(email)
+				.orElseThrow(() -> new ResourceNotFoundException("Admin-ID is not found...!! : " + email));
+
+		return movieRepository.save(movie);
 	}
 
 	@Override
@@ -106,21 +133,13 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	public MovieShows addShows(long adminid, String movieid, MovieShows movieShows) {
-		Admin t1 = adminRepository.findById(adminid)
-				.orElseThrow(() -> new ResourceNotFoundException("Admin-ID is not found...!! : " + adminid));
+	public MovieShows addShows(String email, String movieid, MovieShows movieShows) {
+		User t1 = userRepository.findById(email)
+				.orElseThrow(() -> new ResourceNotFoundException("Admin-ID is not found...!! : " + email));
 		Movie m3 = movieRepository.findById(movieid)
 				.orElseThrow(() -> new ResourceNotFoundException("Movie-ID is not found...!! : " + movieid));
-
-		MovieShows s1 = movieShowsRepository.findById(movieShows.getShowid()).orElse(new MovieShows());
-
-		s1.setShowid(movieShows.getShowid());
-		s1.setShowname(movieShows.getShowname());
-		s1.setShowdate(movieShows.getShowdate());
-		s1.setShowtime(movieShows.getShowtime());
-		s1.setAvailableseats(movieShows.getAvailableseats());
-		s1.setMovie(m3);
-		return movieShowsRepository.save(s1);
+		movieShows.setMovie(m3);
+		return movieShowsRepository.save(movieShows);
 	}
 
 	@Override
@@ -144,14 +163,14 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	public Coupons addCoupons(long adminid, Coupons coupons) {
-		Admin t1 = adminRepository.findById(adminid)
-				.orElseThrow(() -> new ResourceNotFoundException("Admin-ID is not found...!! : " + adminid));
+	public Coupons addCoupons(String email, Coupons coupons) {
+		User t1 = userRepository.findById(email)
+				.orElseThrow(() -> new ResourceNotFoundException("Admin-ID is not found...!! : " + email));
 		Coupons c1 = couponsRepository.findById(coupons.getCouponid()).orElse(new Coupons());
-		c1.setCouponname(coupons.getCouponname());
-		c1.setDiscountoffer(coupons.getDiscountoffer());
-		c1.setAdmin(t1);
-		return couponsRepository.save(c1);
+//		c1.setCouponname(coupons.getCouponname());
+//		c1.setDiscountoffer(coupons.getDiscountoffer());
+		coupons.setUser(t1);
+		return couponsRepository.save(coupons);
 	}
 
 	@Override

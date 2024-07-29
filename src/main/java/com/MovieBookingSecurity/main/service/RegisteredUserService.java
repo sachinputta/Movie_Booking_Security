@@ -6,16 +6,19 @@ import com.MovieBookingSecurity.main.Entity.Cards;
 import com.MovieBookingSecurity.main.Entity.Coupons;
 import com.MovieBookingSecurity.main.Entity.Movie;
 import com.MovieBookingSecurity.main.Entity.RegisteredUser;
+import com.MovieBookingSecurity.main.Entity.User;
 
 public interface RegisteredUserService {
 
 	// Register User............//
 
-	public RegisteredUser registerUser(RegisteredUser registeredUser);
+	public String addRoles();
 
-	public RegisteredUser updateRegisterUser(long registerid, RegisteredUser registeredUser);
+	public User registerUser(User user);
 
-	public String deleteRegisterUser(long registerid);
+	public User updateRegisterUser(String email, User user);
+
+	public String deleteRegisterUser(String email);
 
 	public List<Movie> viewAllMovies();
 
@@ -23,13 +26,13 @@ public interface RegisteredUserService {
 
 	// Cards................//
 
-	public Cards addCards(long registerid, Cards cards);
+	public Cards addCards(String email, Cards cards);
 
 	public Cards updateCards(long cardid, Cards cards);
 
 	public String deleteCards(long cardid);
 
-	public float availableBalance(long registerid, long cardid);
+	public float availableBalance(String email, long cardid);
 
 	public int viewSeatAvailable(String movieid, long showid);
 
